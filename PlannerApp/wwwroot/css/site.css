@@ -117,6 +117,17 @@ app {
     color: red;
 }
 
+.middle-box {
+    background-color:lightblue;
+    margin: auto;
+    margin-top: 150px;
+    width: 450px;
+    padding: 30px;
+   
+    box-shadow: 50px 10px 18px #888888;
+    border-radius: 20px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
