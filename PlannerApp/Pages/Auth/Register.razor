@@ -9,10 +9,12 @@
         <h2>Create a new account</h2>
         <EditForm Model="model" OnValidSubmit="RegisterUser">
             <RadzenCard>
-                @if (!string.IsNullOrWhiteSpace(message))
+    <AlertMessage Message="@message" MessageType="@MessageType"></AlertMessage>
+                
+    @*@if (!string.IsNullOrWhiteSpace(message))
                 {
                     <div class="alert alert-info">@message</div>
-                }
+                }*@
 
                 <DataAnnotationsValidator></DataAnnotationsValidator>
 
@@ -51,6 +53,7 @@
 @code {
 
     RegisterRequest model = new RegisterRequest();
+    AlertMessageType MessageType = AlertMessageType.Success;
     bool isBusy = false;
     string message = string.Empty;
 
@@ -62,10 +65,12 @@
         if (result.IsSuccess)
         {
             message = result.Message;
+            MessageType = AlertMessageType.Success;
         }
         else
         {
-            message = result.Message;
+            message = result.Errors.FirstOrDefault() ?? result.Message;
+            MessageType = AlertMessageType.Error;
         }
 
 
