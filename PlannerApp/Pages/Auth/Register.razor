@@ -43,7 +43,7 @@
                 <RadzenButton ButtonType="Radzen.ButtonType.Submit" Text="Register" ButtonStyle="Radzen.ButtonStyle.Primary"
                               class="btn-block mr-2" Disabled="isBusy"></RadzenButton>
                 <RadzenButton ButtonType="Radzen.ButtonType.Button" Text="Login" ButtonStyle="Radzen.ButtonStyle.Secondary"
-                              class="btn-block mr-2" Disabled="isBusy"></RadzenButton>
+                              class="btn-block mr-2" Disabled="isBusy" Click="GoToLogin"></RadzenButton>
 
             </RadzenCard>
         </EditForm>
@@ -75,5 +75,10 @@
 
 
         isBusy = false;
+    }
+
+    private void GoToLogin()
+    {
+        NavigationManager.NavigateTo("/auth/login");
     }
 }

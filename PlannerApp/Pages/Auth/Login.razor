@@ -1,0 +1,75 @@
+﻿@page "/auth/login"
+@layout AuthLayout
+@inject AuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+
+<div class="row">
+    <div class="col-12">
+        <h2>Login to Your Account</h2>
+        <EditForm Model="model" OnValidSubmit="LoginUser">
+            <RadzenCard>
+                <AlertMessage Message="@message" MessageType="@MessageType"></AlertMessage>
+
+                @*@if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        <div class="alert alert-info">@message</div>
+                    }*@
+
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+
+               
+                <label>Email</label>
+                <RadzenTextBox @bind-Value="model.Email"></RadzenTextBox>
+                <ValidationMessage For="@(() => model.Email)"></ValidationMessage>
+
+                <label>Password</label>
+                <RadzenPassword @bind-Value="model.Password"></RadzenPassword>
+                <ValidationMessage For="@(() => model.Password)"></ValidationMessage>
+
+
+              
+
+                <hr />
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Text="Login" ButtonStyle="Radzen.ButtonStyle.Primary"
+                              class="btn-block mr-2" Disabled="isBusy"></RadzenButton>
+                <RadzenButton ButtonType="Radzen.ButtonType.Button" Text="Register" ButtonStyle="Radzen.ButtonStyle.Secondary"
+                              class="btn-block mr-2" Disabled="isBusy" Click="GoToRegister"></RadzenButton>
+
+            </RadzenCard>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    LoginRequest model = new LoginRequest();
+    AlertMessageType MessageType = AlertMessageType.Success;
+    bool isBusy = false;
+    string message = string.Empty;
+
+    public async Task LoginUser()
+    {
+        //isBusy = true;
+
+        //var result = await AuthenticationService.RegisterUserAsync(model);
+        //if (result.IsSuccess)
+        //{
+        //    message = result.Message;
+        //    MessageType = AlertMessageType.Success;
+        //}
+        //else
+        //{
+        //    message = result.Errors.FirstOrDefault() ?? result.Message;
+        //    MessageType = AlertMessageType.Error;
+        //}
+
+
+        //isBusy = false;
+    }
+
+    private void GoToRegister()
+    {
+        NavigationManager.NavigateTo("/auth/register");
+    }
+}
