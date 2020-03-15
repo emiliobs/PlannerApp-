@@ -24,5 +24,11 @@ namespace PlannerApp.Shared.Services
             var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/auth/register",registerRequest);
             return response.Result;
         }
+
+        public async Task<UserManagerResponse> LoginUserAsync(LoginRequest request)
+        {
+            var response = await client.PostAsync<UserManagerResponse>($"{_baseUrl}/api/auth/login", request);
+            return response.Result;
+        }
     }
 }

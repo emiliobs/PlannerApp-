@@ -13,10 +13,17 @@
 
                 @*@if (!string.IsNullOrWhiteSpace(message))
                     {
-                        <div class="alert alert-info">@message</div>
-                    }*@
-
+                        <div class="alert alert-info">@message</div>                    }*@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
+
+                <ul>
+                    
+                        @foreach (var user in userInfo)
+                        {
+                            <li>@user.Key : @user.Value</li>
+                        }
+                    
+                </ul>
 
                
                 <label>Email</label>
@@ -47,25 +54,28 @@
     AlertMessageType MessageType = AlertMessageType.Success;
     bool isBusy = false;
     string message = string.Empty;
+    Dictionary<string, string> userInfo = new Dictionary<string, string>();
+
 
     public async Task LoginUser()
     {
-        //isBusy = true;
+        isBusy = true;
 
-        //var result = await AuthenticationService.RegisterUserAsync(model);
-        //if (result.IsSuccess)
-        //{
-        //    message = result.Message;
-        //    MessageType = AlertMessageType.Success;
-        //}
-        //else
-        //{
-        //    message = result.Errors.FirstOrDefault() ?? result.Message;
-        //    MessageType = AlertMessageType.Error;
-        //}
+        var result = await AuthenticationService.LoginUserAsync(model);
+        if (result.IsSuccess)
+        {
+            message = "welcome to PlannerApp";
+            userInfo = result.UserInfo;
+            MessageType = AlertMessageType.Success;
+        }
+        else
+        {
+            message = result.Message;
+            MessageType = AlertMessageType.Error;
+        }
 
 
-        //isBusy = false;
+        isBusy = false;
     }
 
     private void GoToRegister()
