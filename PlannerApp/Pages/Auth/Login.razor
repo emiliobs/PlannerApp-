@@ -2,7 +2,7 @@
 @layout AuthLayout
 @inject AuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
-
+@inject ILocalStorageService ILocalStorageService
 
 <div class="row">
     <div class="col-12">
@@ -16,17 +16,7 @@
                         <div class="alert alert-info">@message</div>                    }*@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
 
-                <ul>
-                    
-                        @foreach (var user in userInfo)
-                        {
-                            <li>@user.Key : @user.Value</li>
-                        }
-                    
-                </ul>
-
-               
-                <label>Email</label>
+               <label>Email</label>
                 <RadzenTextBox @bind-Value="model.Email"></RadzenTextBox>
                 <ValidationMessage For="@(() => model.Email)"></ValidationMessage>
 
@@ -54,8 +44,6 @@
     AlertMessageType MessageType = AlertMessageType.Success;
     bool isBusy = false;
     string message = string.Empty;
-    Dictionary<string, string> userInfo = new Dictionary<string, string>();
-
 
     public async Task LoginUser()
     {
@@ -65,8 +53,20 @@
         if (result.IsSuccess)
         {
             message = "welcome to PlannerApp";
-            userInfo = result.UserInfo;
             MessageType = AlertMessageType.Success;
+
+            var userInfo = new LocalUserInfo 
+            {
+                AccessToken = result.Message,
+                Email = result.UserInfo["Email"],
+                FirstName = result.UserInfo["FirstName"],
+                LastName = result.UserInfo["LastName"],
+                Id = result.UserInfo[ClaimTypes.NameIdentifier],
+                    
+            };
+
+            await ILocalStorageService.SetItemAsync("User", userInfo);
+
         }
         else
         {
