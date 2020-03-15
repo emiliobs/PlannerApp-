@@ -52,21 +52,16 @@
         var result = await AuthenticationService.LoginUserAsync(model);
         if (result.IsSuccess)
         {
-            message = "welcome to PlannerApp";
-            MessageType = AlertMessageType.Success;
-
-            var userInfo = new LocalUserInfo 
+            var userInfo = new LocalUserInfo()
             {
                 AccessToken = result.Message,
                 Email = result.UserInfo["Email"],
                 FirstName = result.UserInfo["FirstName"],
                 LastName = result.UserInfo["LastName"],
-                Id = result.UserInfo[ClaimTypes.NameIdentifier],
-                    
+                Id = result.UserInfo[System.Security.Claims.ClaimTypes.NameIdentifier],
             };
 
             await ILocalStorageService.SetItemAsync("User", userInfo);
-
         }
         else
         {
