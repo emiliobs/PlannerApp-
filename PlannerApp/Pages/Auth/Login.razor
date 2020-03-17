@@ -3,6 +3,7 @@
 @inject AuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService ILocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="row">
     <div class="col-12">
@@ -62,6 +63,9 @@
             };
 
             await ILocalStorageService.SetItemAsync("User", userInfo);
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            NavigationManager.NavigateTo("/");
         }
         else
         {

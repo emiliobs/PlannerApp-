@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+@attribute [Authorize]
+
 @*<AuthorizeView>
     <Authorized>
         <h1><em>Welcome @context.User.FindFirst("FirstName").Value</em></h1>
