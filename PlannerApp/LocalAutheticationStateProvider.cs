@@ -1,9 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using PlannerApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -18,13 +15,13 @@ namespace PlannerApp
             _storageService = storageService;
         }
 
-        public async override Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             if (await _storageService.ContainKeyAsync("User"))
             {
-                var userInfo = await _storageService.GetItemAsync<LocalUserInfo>("User");
+                LocalUserInfo userInfo = await _storageService.GetItemAsync<LocalUserInfo>("User");
 
-                var claims = new[]
+                Claim[] claims = new[]
                 {
                     new Claim("Email", userInfo.Email),
                     new Claim("FirstName", userInfo.FirstName),
@@ -33,14 +30,20 @@ namespace PlannerApp
                     new Claim(ClaimTypes.NameIdentifier, userInfo.Id),
                 };
 
-                var identity = new ClaimsIdentity(claims, "BearerToken");
-                var user = new ClaimsPrincipal(identity);
-                var state = new AuthenticationState(user);
+                ClaimsIdentity identity = new ClaimsIdentity(claims, "BearerToken");
+                ClaimsPrincipal user = new ClaimsPrincipal(identity);
+                AuthenticationState state = new AuthenticationState(user);
                 NotifyAuthenticationStateChanged(Task.FromResult(state));
                 return state;
             }
 
             return new AuthenticationState(new ClaimsPrincipal());
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _storageService.RemoveItemAsync("User");
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal())));
         }
     }
 }

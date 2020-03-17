@@ -46,6 +46,15 @@
     bool isBusy = false;
     string message = string.Empty;
 
+    protected override void OnInitialized()
+    {
+
+        model.Email = "emilio@gmail.com";
+        model.Password = "Eabs123.";
+
+        base.OnInitialized();
+    }
+
     public async Task LoginUser()
     {
         isBusy = true;
