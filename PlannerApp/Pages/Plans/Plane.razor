@@ -1,0 +1,122 @@
+﻿@page "/plans"
+@page "/plans/{pageNumber:int}"
+
+@inject PlansService PlansService
+@attribute [Authorize]
+
+<h3>My Plans</h3>
+
+@if (isBusy)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="row">
+        <RadzenTextBox Placeholder="Search Query"></RadzenTextBox>
+    </div>
+    <hr />
+
+    <div class="row">
+        @foreach (var plan in plans)
+        {
+            <div class="col-4">
+                <RadzenCard Style="margin:10px;">
+                    <img src="@plan.ImageFullPath" style="height:100px; margin:50px;" />
+                    <h2>@plan.Title</h2>
+                    <p>@plan.Description</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <RadzenButton ButtonStyle="Radzen.ButtonStyle.Success" Text="Edit" class="btn-block"></RadzenButton>
+                        </div>
+                        <div class="col-6">
+                            <RadzenButton ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" class="btn-block"></RadzenButton>
+                        </div>
+                    </div>
+                </RadzenCard>
+            </div>
+
+        }
+
+    </div>
+
+
+
+    <hr />
+    <div class="row">
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            int page = i;
+            @if (page == PageNumber)
+            {
+                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await MoveToPageAsync(page)" Disabled="true" Style="margin:8px"></RadzenButton>
+
+            }
+            else
+            {
+             <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await MoveToPageAsync(page)" Style="margin:8px"></RadzenButton>
+
+            }
+        }
+
+
+    </div>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public int? PageNumber { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    bool isBusy = false;
+    List<Plan> plans = new List<Plan>();
+
+    int totalPages = 1;
+
+    async Task GetPlansAsync()
+    {
+        isBusy = true;
+        var userState = AuthenticationState.Result;
+        PlansService.AccessToken = userState.User.FindFirst("AccessToken").Value;
+
+
+        if (PageNumber == null)       
+            PageNumber = 1; 
+        var result = await PlansService.GetAllPlansByPageAsync(PageNumber.Value);
+
+        //50 plan | page size = 10 => 5 pages
+        //54 pages | page size = 10 => 5 pages > page = 4 plans:
+        if (result.Count % result.PageSize == 0)
+        
+            totalPages = result.Count / result.PageSize;
+        
+        else
+        
+            totalPages = (result.Count / result.PageSize) + 1;
+        
+
+        plans = result.Records.ToList();
+
+        isBusy = false;
+    }
+
+    async Task MoveToPageAsync(int pageNumber)
+    {
+        PageNumber = pageNumber;
+        await GetPlansAsync();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        await GetPlansAsync();
+
+    }
+
+}

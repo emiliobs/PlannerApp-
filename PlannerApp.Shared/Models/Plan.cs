@@ -11,5 +11,7 @@ namespace PlannerApp.Shared.Models
         public string Description { get; set; }
         public string CoverPath { get; set; }
         public ToDoItem[] ToDoItems { get; set; }
+
+        public string ImageFullPath => $"https://plannerappserver20200228091432.azurewebsites.net/Images/{CoverPath.Substring(26)}";
     }
 }

@@ -34,7 +34,7 @@ namespace PlannerApp.Shared.Services
         /// </summary>
         /// <param name="page">Number of the page</param>
         /// <returns></returns>
-        public   async Task<PlanCollectionPagingResponse> GetAllPlansByPageAsync(int page)
+        public async Task<PlanCollectionPagingResponse> GetAllPlansByPageAsync(int page = 1)
         {
             var response = await client.GetProtectedAsync<PlanCollectionPagingResponse>($"{_baseUrl}/api/plans?page={page}");
             return response.Result;
@@ -45,7 +45,7 @@ namespace PlannerApp.Shared.Services
         /// </summary>
         /// <param name="page">Number of the page</param>
         /// <returns></returns>
-        public async Task<PlanCollectionPagingResponse> SearchPlansByPageAsync(string query,int page = 1)
+        public async Task<PlanCollectionPagingResponse> SearchPlansByPageAsync(string query, int page = 1)
         {
             var response = await client.GetProtectedAsync<PlanCollectionPagingResponse>($"{_baseUrl}/api/plans?query={query}&page={page}");
             return response.Result;
