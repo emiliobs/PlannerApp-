@@ -22,8 +22,9 @@ else
 else
 {
     <div class="row">
-        <RadzenTextBox Placeholder="Search Query" @bind-Value="@Query" class="mr-1"/>
-        <RadzenButton Text="Search" Click="async () => await GetPlansAsync()"></RadzenButton>
+        <RadzenTextBox Placeholder="Search Query" @bind-Value="Query" class="mr-1"></RadzenTextBox>
+            <RadzenButton Text="Search" Click="async () => await GetPlansAsync()"></RadzenButton>
+        
     </div>
     <hr />
 

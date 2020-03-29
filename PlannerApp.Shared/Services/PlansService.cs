@@ -47,7 +47,7 @@ namespace PlannerApp.Shared.Services
         /// <returns></returns>
         public async Task<PlanCollectionPagingResponse> SearchPlansByPageAsync(string query, int page = 1)
         {
-            var response = await client.GetProtectedAsync<PlanCollectionPagingResponse>($"{_baseUrl}/api/plans?query={query}&page={page}");
+            var response = await client.GetProtectedAsync<PlanCollectionPagingResponse>($"{_baseUrl}/api/plans/search?query={query}&page={page}");
             return response.Result;
         }
 
