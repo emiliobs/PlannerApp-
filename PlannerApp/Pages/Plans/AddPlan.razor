@@ -1,0 +1,70 @@
+﻿@page "/plans/addplan"
+
+@inject PlansService PlansService
+@inject IFileReaderService IFileReaderService
+@*@inject NavigationException NavigationException*@
+@attribute [Authorize]
+
+<h3>Add a new Plan</h3>
+
+<div class="row">
+    <div class="col-6">
+        <EditForm Model="model">
+            <RadzenCard>
+                <AlertMessage Message="@message" MessageType="@messageType"></AlertMessage>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+
+                <RadzenTextBox Placeholder="Title" class="mb-3"></RadzenTextBox>
+                <ValidationMessage For="@(() => model.Title)"></ValidationMessage>
+                <RadzenTextArea Placeholder="Description" class="mb-3"></RadzenTextArea>
+                <ValidationMessage For="@(() => model.Description)"></ValidationMessage>
+                <input type="file" @ref="inputReference" @onchange="async ()=> await ChooseFileAsync()" />
+                <img style="width:100%; margin:10px;" src="@imageContent" />
+                <hr />
+                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Primary" Style="margin:5px;" class="btn-block" Text="Insert"></RadzenButton>
+            </RadzenCard>
+        </EditForm>
+       
+    </div>
+</div>
+
+@code {
+
+    PlanRequest model = new PlanRequest();
+    System.IO.Stream fileStream = null;
+    string imageContent = string.Empty;
+    string fileName = string.Empty;
+
+    ElementReference inputReference;
+
+    //Alert:
+    string message = string.Empty;
+    Models.AlertMessageType messageType = Models.AlertMessageType.Success;
+
+    async Task ChooseFileAsync()
+    {
+        var file = (await IFileReaderService.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
+
+        var fileInfo = await file.ReadFileInfoAsync();
+
+        string extension = System.IO.Path.GetExtension(fileInfo.Name);
+
+        var allowedExtensions = new string[] { ".jpg",".png",".bmp" };
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            message = "The chosen file is not a valid image file.";
+            messageType = Models.AlertMessageType.Error;
+            return;
+        }
+
+        using (var memoryStream = await file.CreateMemoryStreamAsync())
+        {
+            fileStream = new System.IO.MemoryStream(memoryStream.ToArray());
+
+            imageContent = $"data:{fileInfo.Type};base64, {Convert.ToBase64String(memoryStream.ToArray())}";
+        }
+    }
+
+}
