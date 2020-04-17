@@ -9,7 +9,7 @@
 @if (string.IsNullOrWhiteSpace(Query))
 {
     <h2>My Plans - Page: @PageNumber</h2>
-   
+
 }
 else
 {
@@ -24,8 +24,8 @@ else
 {
     <div class="row">
         <RadzenTextBox Placeholder="Search Query" @bind-Value="Query" class="mr-1"></RadzenTextBox>
-            <RadzenButton Text="Search" Click="async () => await GetPlansAsync()"></RadzenButton>
-        
+        <RadzenButton Text="Search" Click="async () => await GetPlansAsync()"></RadzenButton>
+
     </div>
     <hr />
 
@@ -37,14 +37,27 @@ else
                     <img src="@plan.CoverPath" style="height:100px; margin:50px;" />
                     <h2>@plan.Title</h2>
                     <p>@plan.Description</p>
+                    <hr />
                     <div class="row">
                         <div class="col-6">
                             <RadzenButton ButtonStyle="Radzen.ButtonStyle.Success" Text="Edit" Click='() => NavigationManager.NavigateTo($"/plans/EditPlan/{plan.Id}")' class="btn-block"></RadzenButton>
                         </div>
                         <div class="col-6">
-                            <RadzenButton ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" class="btn-block"></RadzenButton>
+                            <RadzenButton ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" class="btn-block"
+                                          Click="() => SelectPlan(plan.Id)"></RadzenButton>
                         </div>
                     </div>
+                    @if (selectedPlanId == plan.Id)
+                    {
+                        <div class="row">
+                            <div class="col-12">
+
+                                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="Confirm" class="btn-block"
+                                              Click="async () => await DeletPlanAsync()" Style="margin:5px;"></RadzenButton>
+                            </div>
+                        </div>
+                    }
+
                 </RadzenCard>
             </div>
 
@@ -67,7 +80,7 @@ else
             }
             else
             {
-             <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await MoveToPageAsync(page)" Style="margin:8px"></RadzenButton>
+                <RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" Text="@i.ToString()" Click="async () => await MoveToPageAsync(page)" Style="margin:8px"></RadzenButton>
 
             }
         }
@@ -112,9 +125,9 @@ else
             result = await PlansService.GetAllPlansByPageAsync(PageNumber.Value);
         else
             result = await PlansService.SearchPlansByPageAsync(Query, PageNumber.Value);
-        
-     
-       
+
+
+
         if (result.Count % result.PageSize == 0)
 
             totalPages = result.Count / result.PageSize;
@@ -133,6 +146,32 @@ else
     {
         PageNumber = pageNumber;
         await GetPlansAsync();
+    }
+
+    string selectedPlanId = string.Empty;
+
+    void SelectPlan(string id)
+    {
+        selectedPlanId = id;
+    }
+
+    async Task DeletPlanAsync()
+    {
+        isBusy = true;
+
+        var result = await PlansService.DeletePlanAsync(selectedPlanId);
+
+        if (result.IsSuccess)
+        {
+            var deletePlan = plans.SingleOrDefault(p => p.Id == selectedPlanId);
+            plans.Remove(deletePlan);
+        }
+        else
+        {
+            await GetPlansAsync();
+        }
+
+        isBusy = false;
     }
 
     protected async override Task OnInitializedAsync()
