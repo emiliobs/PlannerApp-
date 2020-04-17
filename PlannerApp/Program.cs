@@ -23,9 +23,15 @@ namespace PlannerApp
             {
                 return new AuthenticationService(URL);
             });
+            
             builder.Services.AddScoped<PlansService>(s => 
             {
                 return new PlansService(URL);
+            });
+
+            builder.Services.AddScoped<ToDoItemService>(s => 
+            {
+                return new ToDoItemService(URL);
             });
 
             builder.Services.AddFileReaderService(options => 
