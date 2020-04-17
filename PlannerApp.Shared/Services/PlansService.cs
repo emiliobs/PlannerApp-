@@ -111,7 +111,8 @@ namespace PlannerApp.Shared.Services
 
             }
             
-              HttpRequestResult<PlanSingleResponse> response = await client.SendFormProtectedAsync<PlanSingleResponse>($"{_baseUrl}/api/plans", ActionType.POST,
+              HttpRequestResult<PlanSingleResponse> response = await client.
+                SendFormProtectedAsync<PlanSingleResponse>($"{_baseUrl}/api/plans", ActionType.PUT,
                                                             formKeyValue.ToArray());
                  return response.Result;
 
